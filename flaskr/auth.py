@@ -15,21 +15,24 @@ def register():
         username = request.form['username']
         password = request.form['password']
         checkeo = request.form['checkeo']
+        email = request.form['email']
         db = get_db()
         error = None
 
         if not username:
-            error = 'Username is required.'
+            error = 'se requiere el usuario.'
         elif not password:
-            error = 'Password is required.'
+            error = 'se requiere contraseña.'
         elif password  != checkeo:
             error = 'la contraseña no coincide .'
+        elif not email:
+            error = 'se requiere el gmail'
 
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
+                    "INSERT INTO user (username, password, email) VALUES (?, ?, ?)",
+                    (username, generate_password_hash(password), email),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -89,3 +92,33 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+@bp.route('/update', methods=('GET', 'POST'))
+@login_required
+
+def updateemail():
+    if request.method == 'POST':
+        newemail = request.form['email']
+        newemail2 = request.form['email2']
+        error = None
+
+        if not newemail:
+            error = 'se requiere nuevo email'
+        elif "@" not in newemail:
+            error = 'no es un  email'
+        elif newemail != newemail2:
+            error = 'los emails no coinciden'
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'UPDATE user SET email = ?'
+                ' WHERE id = ?',
+                (newemail, g.user["id"])
+            )
+            db.commit()
+            return redirect(url_for('blog.index'))
+    
+    return render_template('auth/email.html', user = g.user)
+

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}cambiar gmail{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="email">gmail Nuevo</label>
+    <input name="email" id="email" required>
+    <label for="email2">repetir gmail Nuevo</label>
+    <input name="email2" id="email2" required>
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
