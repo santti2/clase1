@@ -22,11 +22,11 @@ def register():
         if not username:
             error = 'se requiere el usuario.'
         elif not password:
-            error = 'se requiere contraseña.'
+            error = 'se requiere contrasenia.'
         elif password  != checkeo:
             error = 'la contraseña no coincide .'
         elif not email:
-            error = 'se requiere el gmail'
+            error = 'se requiere el email'
 
         if error is None:
             try:
@@ -36,7 +36,7 @@ def register():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"User {username} is already registered"
             else:
                 return redirect(url_for("auth.login"))
 
